@@ -114,6 +114,4 @@ http://www.2amigos.us/open-source
 ~~~
 
 **NOTES:**
-- Yii won't create the database for you, this has to be done manually before you can access it.
-- Check and edit the other files in the `config/` directory to customize your application as required.
-- Refer to the README in the `tests` directory for information specific to basic application tests.
+- Power By. Phingosoft.com
