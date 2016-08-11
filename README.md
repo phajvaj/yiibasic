@@ -23,6 +23,7 @@ DIRECTORY STRUCTURE
       models/             contains model classes
       runtime/            contains files generated during runtime
       tests/              contains various tests for the basic application
+      themes/		  contains themes AdminLTE
       vendor/             contains dependent 3rd-party packages
       views/              contains view files for the Web application
       web/                contains the entry script and Web resources
@@ -67,8 +68,7 @@ at [getcomposer.org](http://getcomposer.org/doc/00-intro.md#installation-nix).
 You can then install this project template using the following command:
 
 ~~~
-php composer.phar global require "fxp/composer-asset-plugin:~1.1.1"
-php composer.phar create-project --prefer-dist --stability=dev yiisoft/yii2-app-basic basic
+composer update
 ~~~
 
 Now you should be able to access the application through the following URL, assuming `basic` is the directory
@@ -95,6 +95,23 @@ return [
     'charset' => 'utf8',
 ];
 ```
+
+### Package
+```php
+	"dmstr/yii2-adminlte-asset": "2.*",        
+        "kartik-v/yii2-widgets": "*",
+        "kartik-v/yii2-grid": "*",
+        "kartik-v/yii2-export": "*",
+        "kartik-v/yii2-mpdf": "*",
+        "kartik-v/yii2-widget-select2": "*",
+        "2amigos/yii2-date-picker-widget": "~1.0",
+        "2amigos/yii2-highcharts-widget": "~1.0"
+```
+~~~
+https://github.com/dmstr/yii2-adminlte-asset
+https://github.com/kartik-v/yii2-grid
+http://www.2amigos.us/open-source
+~~~
 
 **NOTES:**
 - Yii won't create the database for you, this has to be done manually before you can access it.
