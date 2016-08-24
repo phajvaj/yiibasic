@@ -21,19 +21,34 @@ class MainController extends Controller{
         '5' => ['UC นอกใน(พลทหาร)', "v.pttype = '90'"],
     );
     
+    protected $pages = false;
+    protected $pdt1 = null;
+    protected $pdt2 = null;
+    protected $params = null;
+    protected $charts = null;
+    
     public function getRawdata($sql)
     {        
         try{
-            $qc = \Yii::$app->db->createCommand($sql)->queryAll();
+            $query = \Yii::$app->db->createCommand($sql)->queryAll();
         }catch(\yii\db\Exception $e){
             #throw new \yii\web\ConflicHttpException("กรุณาตรวจสอบคำสั่ง SQL => <per>{$sql}</per>");
             return null;
         }
+        //แบ่งหน้า
+        $page = $this->pages;
+        if($page > 0){
+            $page = array(
+                'page' => $this->pages - 1,
+                'params' => $this->params);
+        }
         //นำข้อมูลไปใส่ใน Provider
+        $this->charts = $query;
         $data = new \yii\data\ArrayDataProvider([            
-            'allModels' => $qc,
-            'pagination' => FALSE,
-        ]);
+            'allModels' => $query,            
+            'pagination' => $page,
+        ]);                
+        
         return $data;
     }
     

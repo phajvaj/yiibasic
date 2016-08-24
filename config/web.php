@@ -7,6 +7,7 @@ $config = [
     'name' => 'HOSxP@Yii2Report',//ตั้งค่าชื่อระบบ Yii::$app->name
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'language'=>'th_TH', // เปิดใช้งานภาษาไทย
     'components' => [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
@@ -53,7 +54,10 @@ $config = [
             'rules' => [
             ],
         ],
-        */        
+        */
+        'thaiformatter'=>[
+            'class'=>'dixonsatit\thaiYearFormatter\ThaiYearFormatter',
+        ],
     ],
     'params' => $params,
     'modules' => [

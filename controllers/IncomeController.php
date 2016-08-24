@@ -9,15 +9,22 @@ use yii\filters\VerbFilter;
 
 class IncomeController extends MainController
 {
-    public function actionIndex($dt1 = null, $dt2 = null)
+    public function actionIndex($dt1 = null, $dt2 = null, $page = null)
     {        
         $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
         $dt2 = empty($dt2)? date('Y-m-d') : $dt2;
+        $this->pages = empty($page)?1:$page;        
         
-        if (Yii::$app->request->isPost) {            
-            $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
-            $dt2 = date('Y-m-d', strtotime($_POST['dt2']));            
+        if (Yii::$app->request->isPost) {
+            if(!empty($_POST['dt1'])){
+                $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
+                $dt2 = date('Y-m-d', strtotime($_POST['dt2']));
+            }
+            if(isset($_POST['export_type']))
+                $this->pages = false;
         }
+        
+        $this->params = ['dt1' => $dt1, 'dt2' => $dt2];
         
         $sql = "SELECT
         CASE
@@ -41,7 +48,23 @@ class IncomeController extends MainController
         return $this->render('index', ['sex' => $this->grander, 'dt1' => $dt1, 'dt2' => $dt2, 'data' => $data]);
     }
     
-    public function actionIncpttype($ptype = null, $dt1 = null, $dt2 = null){
+    public function actionIncpttype($ptype = null, $dt1 = null, $dt2 = null, $page = null)
+    {        
+        $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
+        $dt2 = empty($dt2)? date('Y-m-d') : $dt2;
+        $this->pages = empty($page)?1:$page;        
+        
+        if (Yii::$app->request->isPost) {
+            if(!empty($_POST['dt1'])){
+                $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
+                $dt2 = date('Y-m-d', strtotime($_POST['dt2']));
+            }
+            if(isset($_POST['export_type']))
+                $this->pages = false;
+        }
+        
+        $this->params = ['dt1' => $dt1, 'dt2' => $dt2, 'ptype' => $ptype];
+        
         $incKey = $this->array2d_search($this->incGroup, 0, $ptype);
         
         $sql = "SELECT
@@ -62,15 +85,22 @@ class IncomeController extends MainController
         return $this->render('inctype', ['data' => $data, 'ptype' => $ptype, 'dt1' => $dt1, 'dt2' => $dt2, 'sex' => $this->grander]);
     }
     
-    public function actionGroup()
-    {
-        $dt1 = date('Y-m-d');
-        $dt2 = date('Y-m-d');
+    public function actionGroup($dt1 = null, $dt2 = null, $page = null)
+    {        
+        $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
+        $dt2 = empty($dt2)? date('Y-m-d') : $dt2;
+        $this->pages = empty($page)?1:$page;        
         
-        if (Yii::$app->request->isPost) {            
-            $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
-            $dt2 = date('Y-m-d', strtotime($_POST['dt2']));            
+        if (Yii::$app->request->isPost) {
+            if(!empty($_POST['dt1'])){
+                $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
+                $dt2 = date('Y-m-d', strtotime($_POST['dt2']));
+            }
+            if(isset($_POST['export_type']))
+                $this->pages = false;
         }
+        
+        $this->params = ['dt1' => $dt1, 'dt2' => $dt2];
         
         $sql = "SELECT /*cache*/ c.income,c.`name`,COUNT(DISTINCT o.an) as ipd,COUNT(DISTINCT o.vn) as opd,SUM(o.sum_price) as price
         FROM income as c

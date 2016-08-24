@@ -6,8 +6,19 @@ use kartik\export\ExportMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use dosamigos\datepicker\DateRangePicker;
+use dosamigos\highcharts\HighCharts;
 
-$this->title = 'จำนวนใบสั่งยาผู้ป่วยใน(เดือน)';
+$this->title = 'รายงานผู้มารับบริการ '. Yii::$app->thaiformatter->asDate(date('Y-m-d'), 'short');
+
+$Header = [
+        [
+            'columns'=>[
+                ['content'=>'รายการ', 'options'=>['colspan'=>2, 'class'=>'text-center warning']], 
+                ['content'=>'เวร', 'options'=>['colspan'=>4, 'class'=>'text-center warning']],                
+            ],
+            'options'=>['class'=>'skip-export'] // remove this row from export
+        ]
+    ];
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
@@ -15,65 +26,40 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-left'],
         'options' => ['style' => 'width:90px;'],
-        'attribute' => 'Months',
-        'header' => 'เดือน/ปี',
-        'pageSummary' => 'รวม',
+        'attribute' => 'vstdate',
+        'header' => 'วันที่',
+        'value' => function($model) {
+            return Yii::$app->thaiformatter->asDate($model['vstdate'], 'short');
+        }
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'can',
-        'header' => 'จำนวนคน',
-        'format'=>['decimal', 0],
-        'pageSummary' => true,
-        'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+        'attribute' => 'v1',
+        'header' => 'เช้า'
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'rxipd',
-        'header' => 'จำนวนใบสั่งยา',
-        'format'=>['decimal', 0],
-        'pageSummary' => true,
-        'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+        'attribute' => 'v2',
+        'header' => 'บ่าย'
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'items',
-        'header' => 'จำนวนรายการยา',
-        'format'=>['decimal', 0],
-        'pageSummary' => true,
-        'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+        'attribute' => 'v3',
+        'header' => 'ดึก'
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
-        'options' => ['style' => 'width:50px;'],
-        'attribute' => 'admdate',
-        'header' => 'จำนวนวันนอน',
-        'format'=>['decimal', 0],
-        'pageSummary' => true,
-        'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+        'options' => ['style' => 'width:70px;'],
+        'attribute' => 'cvn',
+        'header' => 'รวม'
     ],
-    [
-        'headerOptions' => ['class' => 'text-center'],
-        'contentOptions' => ['class' => 'text-right'],
-        'options' => ['style' => 'width:50px;'],
-        'attribute' => 'sump',
-        'header' => 'ค่าบริการ',
-        'format'=>['decimal', 2],
-        'pageSummary' => true,
-        'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-right text-success'],
-    ],    
 ];
 ?>
 <div class="site-index">
@@ -125,7 +111,7 @@ $gridColumns = [
                 '{toggleData}',
             ],
             'panel' => [
-                'before' => 'ประมวลผลล่าสุด '.Yii::$app->thaiformatter->asDate(time(), 'medium'),
+                'before' => 'ประมวลผลล่าสุด '.date('d/m/').(date('Y')+543),
                 'type' => 'primary', 'heading' => $this->title
             ],
             'columns' => $gridColumns,
@@ -133,6 +119,38 @@ $gridColumns = [
         ]);
         ?>        
         <?php yii\widgets\Pjax::end(); ?>
+        
+        <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Line Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="line-chart" style="height: 300px;">
+              <?= HighCharts::widget([ 
+                    'clientOptions' => [ 
+                        'chart' => [ 'type' => 'line' ], 
+                        'title' => [ 'text' => 'จำนวนคนไข้ที่มารับบริการในวัน' ], 
+                        'xAxis' => [ 'categories' => [ '01/08/59', '02/08/59', '03/08/59' ] ], 
+                        'yAxis' => [ 'title' => [ 'text' => 'Fruit eaten' ] ], 
+                        'series' => [ 
+                            ['name' => 'เช้า', 'data' => [1, 0, 4]], 
+                            ['name' => 'บ่าย', 'data' => [4, 7, 8]],
+                            ['name' => 'ดึก', 'data' => [5, 7, 3]] 
+                        ] 
+                    ] 
+                ]);?>  
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
     </div>
 </div>
 <?php

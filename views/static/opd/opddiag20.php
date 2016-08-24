@@ -6,25 +6,33 @@ use kartik\export\ExportMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use dosamigos\datepicker\DateRangePicker;
+use dosamigos\highcharts\HighCharts;
 
-$this->title = 'จำนวนใบสั่งยาผู้ป่วยใน(เดือน)';
+$this->title = 'สถิติการเจ็บป่วย 20 อันดับ '.date('d/m/').(date('Y')+543);
 
 $gridColumns = [
-    ['class' => 'kartik\grid\SerialColumn'],
+    ['class' => 'kartik\grid\SerialColumn'],    
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:90px;'],
+        'attribute' => 'pdx',
+        'header' => 'ICD10',        
+    ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-left'],
         'options' => ['style' => 'width:90px;'],
-        'attribute' => 'Months',
-        'header' => 'เดือน/ปี',
+        'attribute' => 'name',
+        'header' => 'ชื่อการวินิจฉัย',
         'pageSummary' => 'รวม',
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'can',
-        'header' => 'จำนวนคน',
+        'attribute' => 'cvn',
+        'header' => 'Visit',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -34,8 +42,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'rxipd',
-        'header' => 'จำนวนใบสั่งยา',
+        'attribute' => 'r1',
+        'header' => 'ก.',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -45,8 +53,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'items',
-        'header' => 'จำนวนรายการยา',
+        'attribute' => 'r2',
+        'header' => 'ข.',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -56,8 +64,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'admdate',
-        'header' => 'จำนวนวันนอน',
+        'attribute' => 'r3',
+        'header' => 'ค.',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -65,15 +73,15 @@ $gridColumns = [
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
-        'contentOptions' => ['class' => 'text-right'],
-        'options' => ['style' => 'width:50px;'],
-        'attribute' => 'sump',
-        'header' => 'ค่าบริการ',
-        'format'=>['decimal', 2],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:70px;'],
+        'attribute' => 'chn',
+        'header' => 'รวม',
+        'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-right text-success'],
-    ],    
+        'pageSummaryOptions'=>['class'=>'text-center text-success'],
+    ],
 ];
 ?>
 <div class="site-index">
@@ -99,11 +107,43 @@ $gridColumns = [
                 ]);?>
                 </div>
                 <div class="col-lg-2">                    
-                    <button class='btn btn-danger'>ประมวลผล</button>            
+                    <button class='btn btn-danger'>ประมวลผล</button>                    
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
         </div>
+        <!-- LINE CHART -->
+          <div class="box box-info">
+            <div class="box-header with-border">
+              <h3 class="box-title">Bar Chart</h3>
+
+              <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
+              </div>
+            </div>
+            <div class="box-body chart-responsive">
+              <div class="chart" id="line-chart" style="height: 300px;">
+              <?= HighCharts::widget([ 
+                    'clientOptions' => [ 
+                        'chart' => [ 'type' => 'column' ], 
+                        'title' => [ 'text' => $this->title ], 
+                        'xAxis' => [ 'categories' => $chname ], 
+                        'yAxis' => [ 'title' => [ 'text' => 'Fruit eaten' ] ], 
+                        /*'series' => [ 
+                            ['name' => 'ก.', 'data' => [1, 0, 4]], 
+                            ['name' => 'ข.', 'data' => [4, 7, 8]],
+                            ['name' => 'ค.', 'data' => [5, 7, 3]] 
+                        ]*/
+                        'series' => $series
+                    ] 
+                ]);?>  
+              </div>
+            </div>
+            <!-- /.box-body -->
+          </div>
+          <!-- /.box -->
         <?php yii\widgets\Pjax::begin(); ?>        
         <?php
         echo GridView::widget([
@@ -125,13 +165,22 @@ $gridColumns = [
                 '{toggleData}',
             ],
             'panel' => [
-                'before' => 'ประมวลผลล่าสุด '.Yii::$app->thaiformatter->asDate(time(), 'medium'),
+                'before' => 'ประมวลผลล่าสุด '.date('d/m/').(date('Y')+543),
                 'type' => 'primary', 'heading' => $this->title
             ],
             'columns' => $gridColumns,
             'showPageSummary' => true,
+            'beforeHeader'=>[
+                [
+                    'columns'=>[
+                        ['content'=>'รายการ', 'options'=>['colspan'=>3, 'class'=>'text-center warning']], 
+                        ['content'=>'จำนวน/ครั้ง', 'options'=>['colspan'=>1, 'class'=>'text-center warning']], 
+                        ['content'=>'ประเภทบุคคล/คน', 'options'=>['colspan'=>4, 'class'=>'text-center warning']],                        
+                    ],                    
+                ]
+            ],
         ]);
-        ?>        
+        ?>
         <?php yii\widgets\Pjax::end(); ?>
     </div>
 </div>

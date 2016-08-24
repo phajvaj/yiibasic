@@ -7,7 +7,7 @@ use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use dosamigos\datepicker\DateRangePicker;
 
-$this->title = 'จำนวนใบสั่งยาผู้ป่วยใน(เดือน)';
+$this->title = 'รายงานแล็บที่ตรวจหาสารเสพติด '.Yii::$app->thaiformatter->asDate(date('Y-m-d'), 'short');
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
@@ -15,16 +15,23 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-left'],
         'options' => ['style' => 'width:90px;'],
-        'attribute' => 'Months',
-        'header' => 'เดือน/ปี',
+        'attribute' => 'lab_items_code',
+        'header' => 'รหัส',    
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-left'],
+        'options' => ['style' => 'width:90px;'],
+        'attribute' => 'lab_items_name',
+        'header' => 'ชื่อแล็บ',
         'pageSummary' => 'รวม',
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'can',
-        'header' => 'จำนวนคน',
+        'attribute' => 'sm',
+        'header' => 'ชาย',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -34,8 +41,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'rxipd',
-        'header' => 'จำนวนใบสั่งยา',
+        'attribute' => 'sf',
+        'header' => 'หญิง',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -45,8 +52,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'items',
-        'header' => 'จำนวนรายการยา',
+        'attribute' => 'ag1',
+        'header' => '0-5',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -56,8 +63,8 @@ $gridColumns = [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'admdate',
-        'header' => 'จำนวนวันนอน',
+        'attribute' => 'ag2',
+        'header' => '6-15',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -65,15 +72,81 @@ $gridColumns = [
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
-        'contentOptions' => ['class' => 'text-right'],
+        'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'sump',
-        'header' => 'ค่าบริการ',
-        'format'=>['decimal', 2],
+        'attribute' => 'ag3',
+        'header' => '16-35',
+        'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
-        'pageSummaryOptions'=>['class'=>'text-right text-success'],
-    ],    
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'ag4',
+        'header' => '36-55',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'ag5',
+        'header' => '56+',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'r1',
+        'header' => 'ก.',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'r2',
+        'header' => 'ข.',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'r3',
+        'header' => 'ค.',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:70px;'],
+        'attribute' => 'cc',
+        'header' => 'รวม',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-success'],
+    ],
 ];
 ?>
 <div class="site-index">
@@ -125,14 +198,24 @@ $gridColumns = [
                 '{toggleData}',
             ],
             'panel' => [
-                'before' => 'ประมวลผลล่าสุด '.Yii::$app->thaiformatter->asDate(time(), 'medium'),
+                'before' => 'ประมวลผลล่าสุด '.date('d/m/').(date('Y')+543),
                 'type' => 'primary', 'heading' => $this->title
             ],
             'columns' => $gridColumns,
             'showPageSummary' => true,
+            'beforeHeader'=>[
+                [
+                    'columns'=>[
+                        ['content'=>'รายการ', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],                        
+                        ['content'=>'เพศ', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],
+                        ['content'=>'ช่วงอายุ', 'options'=>['colspan'=>5, 'class'=>'text-center warning']],
+                        ['content'=>'ประเภทบุคคล', 'options'=>['colspan'=>4, 'class'=>'text-center warning']],
+                    ],                    
+                ]
+            ],
         ]);
         ?>        
-        <?php yii\widgets\Pjax::end(); ?>
+        <?php yii\widgets\Pjax::end(); ?>        
     </div>
 </div>
 <?php

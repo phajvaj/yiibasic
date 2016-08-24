@@ -36,13 +36,21 @@
                     //['label' => 'Debug', 'icon' => 'fa fa-dashboard', 'url' => ['/debug']],
                     //['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
+                        'label' => 'สถิติ',
+                        'icon' => 'fa fa-dashboard',
+                        'url' => '#',
+                        'items' => [
+                            ['label' => 'สถิติการเจ็บป่วย 20 อันดับ', 'icon' => 'fa fa-bar-chart', 'url' => ['/static/opddiag20']],
+                            ['label' => 'รายงานสถิติการเจ็บป่วย 10 อันดับกลุ่มโรค', 'icon' => 'fa fa-bar-chart', 'url' => ['/static/grouptop10']],
+                        ],
+                    ],
+                    [
                         'label' => 'เวชระเบียน',
                         'icon' => 'fa fa-share',
                         'url' => '#',
                         'items' => [
-                            ['label' => 'ประเภทบุคคล', 'icon' => 'fa fa-file-code-o', 'url' => ['/screen/family'],],
-                            ['label' => 'รายงานผู้มารับบริการ', 'icon' => 'fa fa-file-code-o', 'url' => ['/screen/opvisit'],],
-                            ['label' => 'Debug', 'icon' => 'fa fa-dashboard', 'url' => ['/debug'],],
+                            ['label' => 'ประเภทบุคคล', 'icon' => 'fa fa-file-code-o', 'url' => ['/mrecord/family'],],
+                            ['label' => 'รายงานผู้มารับบริการ', 'icon' => 'fa fa-file-code-o', 'url' => ['/mrecord/opvisit'],],                            
                             [
                                 'label' => 'Level One',
                                 'icon' => 'fa fa-circle-o',
@@ -68,7 +76,17 @@
                         'url' => '#',
                         'items' =>
                             [
-                                ['label' => 'test', 'icon' => 'fa fa-circle-o', 'url' => '#'],
+                                ['label' => 'รายงานผลการบริการ', 'icon' => 'fa fa-circle-o', 'url' => ['/screen/bpsreport21']],
+                                ['label' => 'รายงานระยะค่าดัชนีมวลกาย', 'icon' => 'fa fa-circle-o', 'url' => ['/screen/bmistate']],
+                            ],
+                    ],
+                    [
+                        'label' => 'แล็บ',
+                        'icon' => 'fa fa-share',
+                        'url' => '#',
+                        'items' =>
+                            [
+                                ['label' => 'รายงานแล็บที่ตรวจหาสารเสพติด', 'icon' => 'fa fa-circle-o', 'url' => ['/lab/inurine']],
                             ],
                     ],
                     [
@@ -78,10 +96,10 @@
                         'items' =>
                         [
                             ['label' => 'การบริการวันนี้', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/index']],
+                            ['label' => 'รายงานผู้ป่วย DUE', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/due']],
                             ['label' => 'จำนวนใบสั่งยาผู้ป่วยนอก(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/rxopd']],
                             ['label' => 'จำนวนใบสั่งยาผู้ป่วยใน(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/rxipd']],
-                            ['label' => 'รายงานอัตราการจ่ายยาผู้ป่วยนอก(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => '#'],
-                            ['label' => 'รายงานอัตราการจ่ายยาผู้ป่วยใน(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => '#'],
+                            ['label' => 'รายงานผู้ป่วยแพ้ยา', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/allergy']],                            
                         ],
                     ],
                     [

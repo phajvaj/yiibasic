@@ -25,7 +25,7 @@ $gridColumns = [
         'options' => ['style' => 'width:50px;'],
         'attribute' => 'name',
         'header' => 'หมวดค่ารักษา',
-        'pageSummary' => 'รวม',        
+        'pageSummary' => 'รวม',
     ],
     [
         'headerOptions' => ['class' => 'text-center'],

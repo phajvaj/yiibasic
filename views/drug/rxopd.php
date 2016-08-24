@@ -6,7 +6,6 @@ use kartik\export\ExportMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use dosamigos\datepicker\DateRangePicker;
-use dosamigos\highcharts\HighCharts;
 
 $this->title = 'จำนวนใบสั่งยาผู้ป่วยนอก(เดือน)';
 
@@ -19,13 +18,38 @@ $gridColumns = [
         'attribute' => 'Months',
         'header' => 'เดือน/ปี',
         'pageSummary' => 'รวม',
+        'value' => function($model) {
+            return Yii::$app->thaiformatter->asDate($model['Months'], 'php:m/').(Yii::$app->thaiformatter->asDate($model['Months'], 'php:Y')+543);
+        }
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'cvn',
+        'header' => 'จำนวนคน',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
         'attribute' => 'rxopd',
-        'header' => 'จำนวนคน',
+        'header' => 'จำนวนใบสั่งยา/มียา',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'nrx',
+        'header' => 'จำนวนใบสั่งยา/ไม่มียา',
         'format'=>['decimal', 0],
         'pageSummary' => true,
         'pageSummaryFunc' => GridView::F_SUM,
@@ -104,7 +128,7 @@ $gridColumns = [
                 '{toggleData}',
             ],
             'panel' => [
-                'before' => 'ประมวลผลล่าสุด '.date('d/m/').(date('Y')+543),
+                'before' => 'ประมวลผลล่าสุด '.Yii::$app->thaiformatter->asDate(time(), 'medium'),
                 'type' => 'primary', 'heading' => $this->title
             ],
             'columns' => $gridColumns,
