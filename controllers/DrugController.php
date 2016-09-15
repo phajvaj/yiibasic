@@ -9,6 +9,27 @@ use yii\filters\VerbFilter;
 
 class DrugController extends MainController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['get'],
+                ],
+            ],
+            'access' => [
+                'class'  => AccessControl::className(),
+                'rules' =>  [
+                    [
+                        'actions' => ['login'],
+                        'allow' => false,
+                        'roles' => ['@']
+                    ],
+                ]
+            ]
+        ];
+    }
     public function actionIndex($dt1 = null, $dt2 = null, $page = null)
     {        
         $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
@@ -119,7 +140,7 @@ class DrugController extends MainController
         return $this->render('rxipd', ['data' => $data, 'dt1' => $dt1, 'dt2' => $dt2]);
     }
     
-    public function actionDue($dt1 = null, $dt2 = null, $page = null)
+    public function actionDueitem($dt1 = null, $dt2 = null, $page = null)
     {        
         $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
         $dt2 = empty($dt2)? date('Y-m-d') : $dt2;
@@ -137,21 +158,61 @@ class DrugController extends MainController
         $this->params = ['dt1' => $dt1, 'dt2' => $dt2];
         
         $sql = "SELECT /*cache*/
-        o.hn,CONCAT(p.pname,p.fname,SPACE(2),p.lname) as ptname,o.icode,CONCAT(d.`name`,' ',d.strength,' x 1',d.units) as drname,o.qty,e.doctor_reason,o.vstdate
+        o.icode,CONCAT(d.`name`, ' ',d.strength, ' x 1',d.units) as drugname,
+        COUNT(DISTINCT o.vn) as cvn,COUNT(DISTINCT o.hn) as chn,
+        COUNT(DISTINCT IF(o.icode LIKE '1%',o.vn,NULL)) as rxopd,
+        SUM(o.qty) as qty,SUM(o.sum_price) as sump
+        FROM opitemrece as o
+        LEFT OUTER JOIN drugitems as d ON(o.icode=d.icode)
+        LEFT OUTER JOIN rx_doctor as r ON(r.vn = o.vn)
+        WHERE 
+        o.vstdate BETWEEN '{$dt1}' AND '{$dt2}'
+        AND
+        o.icode IN('1590003','1510901','1560016','1500670')
+        GROUP BY o.icode";
+        
+        $data = $this->getRawdata($sql);        
+        
+        return $this->render('dueitem', ['data' => $data, 'dt1' => $dt1, 'dt2' => $dt2]);
+    }
+    
+    public function actionDue($dt1 = null, $dt2 = null, $page = null, $icode = null)
+    {
+        $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
+        $dt2 = empty($dt2)? date('Y-m-d') : $dt2;
+        
+        $this->pages = empty($page)?1:$page;        
+        
+        if (Yii::$app->request->isPost) {
+            if(!empty($_POST['dt1'])){
+                $dt1 = date('Y-m-d', strtotime($_POST['dt1']));
+                $dt2 = date('Y-m-d', strtotime($_POST['dt2']));                
+            }
+            
+            #$icode = empty($_POST['icode'])? null : $_POST['icode'];
+            
+            if(isset($_POST['export_type']))
+                $this->pages = false;
+        }
+        
+        $this->params = ['dt1' => $dt1, 'dt2' => $dt2, 'icode' => $icode];
+        
+        $sql = "SELECT /*cache*/
+        o.hn,CONCAT(p.pname,p.fname,SPACE(2),p.lname) as ptname,
+        CalAge(p.birthday, CURDATE(), 1) as age,
+        o.icode,CONCAT(d.`name`,' ',d.strength,' x 1',d.units) as drname,o.qty,e.doctor_reason,o.vstdate
         FROM opitemrece as o
         LEFT OUTER JOIN ovst_presc_ned as n ON(o.vn=n.vn AND o.icode=n.icode)
         LEFT OUTER JOIN drugitems as d ON(o.icode=d.icode)
         LEFT OUTER JOIN patient as p ON(o.hn=p.hn)
         LEFT OUTER JOIN drugitems_ned_reason_list as e ON(n.presc_reason=e.claim_control)
         WHERE
-        o.icode IN('1590003','1510901','1560016','1500670','1500605')
-        AND
-        o.vstdate BETWEEN '{$dt1}' AND '{$dt2}'
-        ORDER BY vstdate DESC";
+        " . (empty($icode)? "o.icode IN('1590003','1510901','1560016','1500670','1500605')" : "o.icode='{$icode}'") . "
+         AND o.vstdate BETWEEN '{$dt1}' AND '{$dt2}' GROUP BY o.vn,o.icode ORDER BY o.vstdate DESC";
         
         $data = $this->getRawdata($sql);        
         
-        return $this->render('due', ['data' => $data, 'dt1' => $dt1, 'dt2' => $dt2]);
+        return $this->render('due', ['data' => $data, 'dt1' => $dt1, 'dt2' => $dt2, 'icode' => $icode]);
     }
     
     public function actionAllergy($dt1 = null, $dt2 = null, $page = null)

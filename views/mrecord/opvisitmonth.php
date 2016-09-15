@@ -6,59 +6,93 @@ use kartik\export\ExportMenu;
 use yii\bootstrap\ActiveForm;
 use yii\helpers\Url;
 use dosamigos\datepicker\DateRangePicker;
-use dosamigos\highcharts\HighCharts;
 
-$this->title = 'รายงานผู้มารับบริการ(รายวัน) '. Yii::$app->thaiformatter->asDate(date('Y-m-d'), 'short');
-
-$Header = [
-        [
-            'columns'=>[
-                ['content'=>'รายการ', 'options'=>['colspan'=>2, 'class'=>'text-center warning']], 
-                ['content'=>'เวร', 'options'=>['colspan'=>4, 'class'=>'text-center warning']],                
-            ],
-            'options'=>['class'=>'skip-export'] // remove this row from export
-        ]
-    ];
+$this->title = 'รายงานผู้มารับบริการ(รายเดือน)';
 
 $gridColumns = [
     ['class' => 'kartik\grid\SerialColumn'],
     [
         'headerOptions' => ['class' => 'text-center'],
-        'contentOptions' => ['class' => 'text-left'],
+        'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:90px;'],
-        'attribute' => 'vstdate',
-        'header' => 'วันที่',
+        'attribute' => 'mm',
+        'header' => 'เดือน/ปี',
+        'pageSummary' => 'รวม',
         'value' => function($model) {
-            return Yii::$app->thaiformatter->asDate($model['vstdate'], 'short');
+            return Yii::$app->thaiformatter->asDate($model['mm'], 'php:m/').(Yii::$app->thaiformatter->asDate($model['mm'], 'php:Y')+543);
         }
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'v1',
-        'header' => 'เช้า'
+        'attribute' => 'ccv',
+        'header' => 'ครั้ง',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'v2',
-        'header' => 'บ่าย'
+        'attribute' => 'vhn',
+        'header' => 'คน',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
         'options' => ['style' => 'width:50px;'],
-        'attribute' => 'v3',
-        'header' => 'ดึก'
+        'attribute' => 'cca',
+        'header' => 'ครั้ง',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
     ],
     [
         'headerOptions' => ['class' => 'text-center'],
         'contentOptions' => ['class' => 'text-center'],
-        'options' => ['style' => 'width:70px;'],
-        'attribute' => 'cvn',
-        'header' => 'รวม'
+        'options' => ['style' => 'width:50px;'],
+        'attribute' => 'ahn',
+        'header' => 'คน',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-warning'],
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        #'attribute' => '',
+        'header' => 'ครั้ง',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-success'],
+        'value' => function($model) {
+            return $model['ccv'] + $model['cca'];
+        }
+    ],
+    [
+        'headerOptions' => ['class' => 'text-center'],
+        'contentOptions' => ['class' => 'text-center'],
+        'options' => ['style' => 'width:50px;'],
+        #'attribute' => '',
+        'header' => 'คน',
+        'format'=>['decimal', 0],
+        'pageSummary' => true,
+        'pageSummaryFunc' => GridView::F_SUM,
+        'pageSummaryOptions'=>['class'=>'text-center text-success'],
+        'value' => function($model) {
+            return $model['vhn'] + $model['ahn'];
+        }
     ],
 ];
 ?>
@@ -111,46 +145,24 @@ $gridColumns = [
                 '{toggleData}',
             ],
             'panel' => [
-                'before' => 'ประมวลผลล่าสุด '.date('d/m/').(date('Y')+543),
+                'before' => 'ประมวลผลล่าสุด '.Yii::$app->thaiformatter->asDate(time(), 'medium'),
                 'type' => 'primary', 'heading' => $this->title
             ],
             'columns' => $gridColumns,
-            'showPageSummary' => true,
+            'showPageSummary' => true,            
+            'beforeHeader'=>[
+                [
+                    'columns'=>[
+                        ['content'=>'รายการ', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],                        
+                        ['content'=>'ผู้ป่วยนอก', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],
+                        ['content'=>'ผู้ป่วยใน', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],
+                        ['content'=>'รวม', 'options'=>['colspan'=>2, 'class'=>'text-center warning']],
+                    ],                    
+                ]
+            ],
         ]);
         ?>        
         <?php yii\widgets\Pjax::end(); ?>
-        
-        <!-- LINE CHART -->
-          <div class="box box-info">
-            <div class="box-header with-border">
-              <h3 class="box-title">Line Chart</h3>
-
-              <div class="box-tools pull-right">
-                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
-                </button>
-                <button type="button" class="btn btn-box-tool" data-widget="remove"><i class="fa fa-times"></i></button>
-              </div>
-            </div>
-            <div class="box-body chart-responsive">
-              <div class="chart" id="line-chart" style="height: 300px;">
-              <?= HighCharts::widget([ 
-                    'clientOptions' => [ 
-                        'chart' => [ 'type' => 'line' ], 
-                        'title' => [ 'text' => 'จำนวนคนไข้ที่มารับบริการในวัน' ], 
-                        'xAxis' => [ 'categories' => [ '01/08/59', '02/08/59', '03/08/59' ] ], 
-                        'yAxis' => [ 'title' => [ 'text' => 'Fruit eaten' ] ], 
-                        'series' => [ 
-                            ['name' => 'เช้า', 'data' => [1, 0, 4]], 
-                            ['name' => 'บ่าย', 'data' => [4, 7, 8]],
-                            ['name' => 'ดึก', 'data' => [5, 7, 3]] 
-                        ] 
-                    ] 
-                ]);?>  
-              </div>
-            </div>
-            <!-- /.box-body -->
-          </div>
-          <!-- /.box -->
     </div>
 </div>
 <?php

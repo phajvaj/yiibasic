@@ -49,15 +49,15 @@
                         'icon' => 'fa fa-share',
                         'url' => '#',
                         'items' => [
-                            ['label' => 'ประเภทบุคคล', 'icon' => 'fa fa-file-code-o', 'url' => ['/mrecord/family'],],
-                            ['label' => 'รายงานผู้มารับบริการ', 'icon' => 'fa fa-file-code-o', 'url' => ['/mrecord/opvisit'],],                            
+                            ['label' => 'ประเภทบุคคล', 'icon' => 'fa fa-file-code-o', 'url' => ['/mrecord/family'],],                            
                             [
-                                'label' => 'Level One',
+                                'label' => 'รายงานผู้มารับบริการ',
                                 'icon' => 'fa fa-circle-o',
                                 'url' => '#',
                                 'items' => [
-                                    ['label' => 'Level Two', 'icon' => 'fa fa-circle-o', 'url' => '#',],
-                                    [
+                                    ['label' => 'รายวัน', 'icon' => 'fa fa-circle-o', 'url' => ['/mrecord/opvisit'],],
+                                    ['label' => 'รายเดือน', 'icon' => 'fa fa-circle-o', 'url' => ['/mrecord/opvisitmonth'],],
+                                    /*[
                                         'label' => 'Level Two',
                                         'icon' => 'fa fa-circle-o',
                                         'url' => '#',
@@ -65,7 +65,7 @@
                                             ['label' => 'Level Three', 'icon' => 'fa fa-circle-o', 'url' => '#',],
                                             ['label' => 'Level Three', 'icon' => 'fa fa-circle-o', 'url' => '#',],
                                         ],
-                                    ],
+                                    ],*/
                                 ],
                             ],
                         ],
@@ -96,7 +96,16 @@
                         'items' =>
                         [
                             ['label' => 'การบริการวันนี้', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/index']],
-                            ['label' => 'รายงานผู้ป่วย DUE', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/due']],
+                            #['label' => 'รายงานผู้ป่วย DUE', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/due']],
+                            [
+                                'label' => 'รายงานผู้ป่วย DUE',
+                                'icon' => 'fa fa-circle-o',
+                                'url' => '#',
+                                'items' => [
+                                    ['label' => 'รายงานรายการยา DUE', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/dueitem'],],
+                                    ['label' => 'รายงานผู้ป่วย', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/due'],],
+                                ],
+                            ],
                             ['label' => 'จำนวนใบสั่งยาผู้ป่วยนอก(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/rxopd']],
                             ['label' => 'จำนวนใบสั่งยาผู้ป่วยใน(เดือน)', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/rxipd']],
                             ['label' => 'รายงานผู้ป่วยแพ้ยา', 'icon' => 'fa fa-circle-o', 'url' => ['/drug/allergy']],                            

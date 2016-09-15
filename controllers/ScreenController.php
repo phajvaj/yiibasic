@@ -9,6 +9,27 @@ use yii\filters\VerbFilter;
 
 class ScreenController extends MainController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['get'],
+                ],
+            ],
+            'access' => [
+                'class'  => AccessControl::className(),
+                'rules' =>  [
+                    [
+                        'actions' => ['login'],
+                        'allow' => false,
+                        'roles' => ['@']
+                    ],
+                ]
+            ]
+        ];
+    }
     public function actionBpsreport21($dt1 = null, $dt2 = null)
     {        
         $dt1 = empty($dt1)? date('Y-m-d') : $dt1;

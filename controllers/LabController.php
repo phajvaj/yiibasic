@@ -9,6 +9,27 @@ use yii\filters\VerbFilter;
 
 class LabController extends MainController
 {
+    public function behaviors()
+    {
+        return [
+            'verbs' => [
+                'class' => VerbFilter::className(),
+                'actions' => [
+                    'delete' => ['get'],
+                ],
+            ],
+            'access' => [
+                'class'  => AccessControl::className(),
+                'rules' =>  [
+                    [
+                        'actions' => ['login'],
+                        'allow' => false,
+                        'roles' => ['@']
+                    ],
+                ]
+            ]
+        ];
+    }
     public function actionInurine($dt1 = null, $dt2 = null, $page = null)
     {        
         $dt1 = empty($dt1)? date('Y-m-d') : $dt1;
