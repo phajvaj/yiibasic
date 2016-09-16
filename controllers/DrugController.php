@@ -11,19 +11,13 @@ class DrugController extends MainController
 {
     public function behaviors()
     {
-        return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['get'],
-                ],
-            ],
+        return [            
             'access' => [
                 'class'  => AccessControl::className(),
                 'rules' =>  [
                     [
-                        'actions' => ['login'],
-                        'allow' => false,
+                        'actions' => ['index','rxopd','rxipd','dueitem','due','allergy'],
+                        'allow' => true,
                         'roles' => ['@']
                     ],
                 ]

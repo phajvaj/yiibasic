@@ -119,6 +119,7 @@
                         [
                             ['label' => 'รายได้แยกตามกลุ่มสิทธิ', 'icon' => 'fa fa-circle-o', 'url' => ['/income/index']],
                             ['label' => 'รายได้แยกตามหมวดการรักษา', 'icon' => 'fa fa-circle-o', 'url' => ['/income/group']],
+                            ['label' => 'รายการค่ารักษาพยาบาลสิทธิชำระเงินครบ', 'icon' => 'fa fa-circle-o', 'url' => ['/income/rcpt10']],
                         ]
                     ],
                     //IPD Menu

@@ -12,18 +12,12 @@ class StaticController extends MainController
     public function behaviors()
     {
         return [
-            'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
-                    'delete' => ['get'],
-                ],
-            ],
             'access' => [
                 'class'  => AccessControl::className(),
                 'rules' =>  [
                     [
-                        'actions' => ['login'],
-                        'allow' => false,
+                        'actions' => ['opddiag20','grouptop10'],
+                        'allow' => true,
                         'roles' => ['@']
                     ],
                 ]
